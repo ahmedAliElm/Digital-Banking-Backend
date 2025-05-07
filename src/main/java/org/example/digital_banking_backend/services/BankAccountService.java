@@ -4,8 +4,9 @@ import org.example.digital_banking_backend.entities.BankAccount;
 import org.example.digital_banking_backend.entities.CurrentAccount;
 import org.example.digital_banking_backend.entities.Customer;
 import org.example.digital_banking_backend.entities.SavingAccount;
+import org.example.digital_banking_backend.exceptions.BalanceNotEnoughException;
+import org.example.digital_banking_backend.exceptions.BankAccountNotFoundException;
 import org.example.digital_banking_backend.exceptions.CustomerNotFoundException;
-
 import java.util.List;
 
 public interface BankAccountService {
@@ -18,12 +19,14 @@ public interface BankAccountService {
 
     List<Customer> listCustomers();
 
-    BankAccount getBankAccount(String accountId);
+    BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException;
 
-    void debit(String accountId, double amount, String description);
+    void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotEnoughException;
 
-    void credit(String accountId, double amount, String description);
+    void credit(String accountId, double amount, String description) throws BalanceNotEnoughException, BankAccountNotFoundException;
 
-    void transfer(String fromAccId, String toAccId, double amount);
+    void transfer(String fromAccId, String toAccId, double amount) throws BalanceNotEnoughException, BankAccountNotFoundException;
+
+    List<BankAccount> bankAccountList();
 }
 

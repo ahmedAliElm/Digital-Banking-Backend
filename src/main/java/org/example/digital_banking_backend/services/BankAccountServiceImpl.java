@@ -3,16 +3,15 @@ package org.example.digital_banking_backend.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.digital_banking_backend.entities.BankAccount;
-import org.example.digital_banking_backend.entities.CurrentAccount;
-import org.example.digital_banking_backend.entities.Customer;
-import org.example.digital_banking_backend.entities.SavingAccount;
+import org.example.digital_banking_backend.entities.*;
+import org.example.digital_banking_backend.enums.OperationType;
+import org.example.digital_banking_backend.exceptions.BalanceNotEnoughException;
+import org.example.digital_banking_backend.exceptions.BankAccountNotFoundException;
 import org.example.digital_banking_backend.exceptions.CustomerNotFoundException;
 import org.example.digital_banking_backend.repositories.AccountOperationRepository;
 import org.example.digital_banking_backend.repositories.BankAccountRepository;
 import org.example.digital_banking_backend.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -79,33 +78,80 @@ public class BankAccountServiceImpl implements BankAccountService {
         return savedAcc;
     }
 
+
     @Override
     public List<Customer> listCustomers() {
-        return List.of();
+        return customerRepository.findAll();
     }
 
 
     @Override
-    public BankAccount getBankAccount(String accountId) {
-        return null;
+    public BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException {
+
+        BankAccount bankAccount = bankAccountRepository.findById(accountId).orElseThrow(() -> new BankAccountNotFoundException("Bank account not found"));
+
+        return bankAccount;
     }
 
 
     @Override
-    public void debit(String accountId, double amount, String description) {
+    public void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotEnoughException {
+
+        BankAccount bankAccount = getBankAccount(accountId);
+
+        if (bankAccount.getBalance() < amount)
+            throw new BalanceNotEnoughException("Not enough balance.");
+
+        AccountOperation accountOperation = new AccountOperation();
+
+        accountOperation.setType(OperationType.DEBIT);
+        accountOperation.setAmount(amount);
+        accountOperation.setDescription(description);
+        accountOperation.setOperationDate(new Date());
+        accountOperation.setBankAccount(bankAccount);
+
+        accountOperationRepository.save(accountOperation);
+
+        bankAccount.setBalance(bankAccount.getBalance() - amount);
+
+        bankAccountRepository.save(bankAccount);
+    }
+
+
+    @Override
+    public void credit(String accountId, double amount, String description) throws BankAccountNotFoundException {
+
+        BankAccount bankAccount = getBankAccount(accountId);
+
+        AccountOperation accountOperation = new AccountOperation();
+
+        accountOperation.setType(OperationType.CREDIT);
+        accountOperation.setAmount(amount);
+        accountOperation.setDescription(description);
+        accountOperation.setOperationDate(new Date());
+        accountOperation.setBankAccount(bankAccount);
+
+        accountOperationRepository.save(accountOperation);
+
+        bankAccount.setBalance(bankAccount.getBalance() + amount);
+
+        bankAccountRepository.save(bankAccount);
+    }
+
+
+    @Override
+    public void transfer(String fromAccId, String toAccId, double amount) throws BalanceNotEnoughException, BankAccountNotFoundException {
+
+        debit(fromAccId, amount, "Transfer from " + fromAccId);
+
+        credit(toAccId, amount, "Transfer to " + toAccId);
 
     }
 
 
     @Override
-    public void credit(String accountId, double amount, String description) {
-
-    }
-
-
-    @Override
-    public void transfer(String fromAccId, String toAccId, double amount) {
-
+    public List<BankAccount> bankAccountList() {
+        return bankAccountRepository.findAll();
     }
 }
 
