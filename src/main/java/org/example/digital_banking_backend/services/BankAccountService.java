@@ -1,5 +1,6 @@
 package org.example.digital_banking_backend.services;
 
+import org.example.digital_banking_backend.dtos.CustomerDTO;
 import org.example.digital_banking_backend.entities.BankAccount;
 import org.example.digital_banking_backend.entities.CurrentAccount;
 import org.example.digital_banking_backend.entities.Customer;
@@ -17,7 +18,7 @@ public interface BankAccountService {
 
     SavingAccount saveSavingBankAccount(double initialBalance, Long customerId, double interestRate) throws CustomerNotFoundException;
 
-    List<Customer> listCustomers();
+    List<CustomerDTO> listCustomers();
 
     BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException;
 
