@@ -43,19 +43,3 @@ public class BankAccountRestController {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

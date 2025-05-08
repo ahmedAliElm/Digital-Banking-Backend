@@ -1,10 +1,6 @@
 package org.example.digital_banking_backend.services;
 
 import org.example.digital_banking_backend.dtos.*;
-import org.example.digital_banking_backend.entities.BankAccount;
-import org.example.digital_banking_backend.entities.CurrentAccount;
-import org.example.digital_banking_backend.entities.Customer;
-import org.example.digital_banking_backend.entities.SavingAccount;
 import org.example.digital_banking_backend.exceptions.BalanceNotEnoughException;
 import org.example.digital_banking_backend.exceptions.BankAccountNotFoundException;
 import org.example.digital_banking_backend.exceptions.CustomerNotFoundException;
