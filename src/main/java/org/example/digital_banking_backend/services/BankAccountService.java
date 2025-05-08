@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface BankAccountService {
 
-    Customer saveCustomer(Customer customer);
+    CustomerDTO saveCustomer(CustomerDTO customerDTO);
 
     CurrentAccount saveCurrentBankAccount(double initialBalance, Long customerId, double overDraft) throws CustomerNotFoundException;
 
@@ -31,5 +31,9 @@ public interface BankAccountService {
     List<BankAccount> bankAccountList();
 
     CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException;
+
+    CustomerDTO updateCustomer(CustomerDTO customerDTO);
+
+    void deleteCustomer(Long customerId);
 }
 

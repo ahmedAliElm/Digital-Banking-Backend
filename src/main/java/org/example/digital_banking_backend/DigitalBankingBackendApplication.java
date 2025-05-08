@@ -1,5 +1,6 @@
 package org.example.digital_banking_backend;
 
+import org.example.digital_banking_backend.dtos.CustomerDTO;
 import org.example.digital_banking_backend.entities.*;
 import org.example.digital_banking_backend.enums.AccountStatus;
 import org.example.digital_banking_backend.enums.OperationType;
@@ -90,7 +91,7 @@ public class DigitalBankingBackendApplication {
 
             Stream.of("Hassan", "Ali", "Ayoub").forEach(name -> {
 
-                Customer customer = new Customer();
+                CustomerDTO customer = new CustomerDTO();
                 customer.setName(name);
                 customer.setEmail(name + "@gmail.com");
 
