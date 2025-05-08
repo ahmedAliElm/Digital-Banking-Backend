@@ -1,8 +1,10 @@
 package org.example.digital_banking_backend.mappers;
 
+import org.example.digital_banking_backend.dtos.AccountOperationDTO;
 import org.example.digital_banking_backend.dtos.CurrentBankAccountDTO;
 import org.example.digital_banking_backend.dtos.CustomerDTO;
 import org.example.digital_banking_backend.dtos.SavingBankAccountDTO;
+import org.example.digital_banking_backend.entities.AccountOperation;
 import org.example.digital_banking_backend.entities.CurrentAccount;
 import org.example.digital_banking_backend.entities.Customer;
 import org.example.digital_banking_backend.entities.SavingAccount;
@@ -40,6 +42,8 @@ public class BankAccountMapperImpl {
 
         savingBankAccountDTO.setCustomer(fromCustomer(savingAccount.getCustomer()));
 
+        savingBankAccountDTO.setType(savingAccount.getClass().getSimpleName());
+
         return savingBankAccountDTO;
     }
 
@@ -64,6 +68,8 @@ public class BankAccountMapperImpl {
 
         currentBankAccountDTO.setCustomer(fromCustomer(currentAccount.getCustomer()));
 
+        currentBankAccountDTO.setType(currentAccount.getClass().getSimpleName());
+
         return currentBankAccountDTO;
     }
 
@@ -78,5 +84,28 @@ public class BankAccountMapperImpl {
 
         return currentAccount;
     }
+
+
+    public AccountOperationDTO fromAccountOperation(AccountOperation accountOperation) {
+
+        AccountOperationDTO accountOperationDTO = new AccountOperationDTO();
+
+        BeanUtils.copyProperties(accountOperation, accountOperationDTO);
+
+        return accountOperationDTO;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
