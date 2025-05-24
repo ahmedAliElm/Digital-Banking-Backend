@@ -20,7 +20,7 @@ public interface BankAccountService {
 
     void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotEnoughException;
 
-    void credit(String accountId, double amount, String description) throws BalanceNotEnoughException, BankAccountNotFoundException;
+    void credit(String accountId, double amount, String description) throws BankAccountNotFoundException;
 
     void transfer(String fromAccId, String toAccId, double amount) throws BalanceNotEnoughException, BankAccountNotFoundException;
 
@@ -36,4 +36,3 @@ public interface BankAccountService {
 
     AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException;
 }
-

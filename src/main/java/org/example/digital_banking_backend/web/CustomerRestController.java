@@ -3,9 +3,7 @@ package org.example.digital_banking_backend.web;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.digital_banking_backend.dtos.CustomerDTO;
-import org.example.digital_banking_backend.entities.Customer;
 import org.example.digital_banking_backend.exceptions.CustomerNotFoundException;
-import org.example.digital_banking_backend.repositories.BankAccountRepository;
 import org.example.digital_banking_backend.services.BankAccountService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +14,6 @@ import java.util.List;
 @Slf4j
 public class CustomerRestController {
 
-    private final BankAccountRepository bankAccountRepository;
     private BankAccountService bankAccountService;
 
 
@@ -54,26 +51,3 @@ public class CustomerRestController {
         bankAccountService.deleteCustomer(id);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
