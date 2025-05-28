@@ -1,0 +1,152 @@
+@startuml Digital Banking Backend Class Diagram
+
+' Entities
+abstract class BankAccount {
+  -id: String
+  -balance: double
+  -createdAt: Date
+  -status: AccountStatus
+}
+
+class Customer {
+  -id: Long
+  -name: String
+  -email: String
+}
+
+class CurrentAccount extends BankAccount {
+  -overDraft: double
+}
+
+class SavingAccount extends BankAccount {
+  -interestRate: double
+}
+
+class AccountOperation {
+  -id: Long
+  -operationDate: Date
+  -amount: double
+  -type: OperationType
+  -description: String
+}
+
+enum AccountStatus {
+  CREATED
+  ACTIVATED
+  SUSPENDED
+}
+
+enum OperationType {
+  DEBIT
+  CREDIT
+}
+
+' DTOs
+class BankAccountDTO {
+  -type: String
+}
+
+class CurrentBankAccountDTO extends BankAccountDTO {
+  -id: String
+  -balance: double
+  -createdAt: Date
+  -status: AccountStatus
+  -overdraft: double
+}
+
+class SavingBankAccountDTO extends BankAccountDTO {
+  -id: String
+  -balance: double
+  -createdAt: Date
+  -status: AccountStatus
+  -interestRate: double
+}
+
+class CustomerDTO {
+  -id: Long
+  -name: String
+  -email: String
+}
+
+class AccountOperationDTO {
+  -id: Long
+  -operationDate: Date
+  -amount: double
+  -type: OperationType
+  -description: String
+}
+
+class AccountHistoryDTO {
+  -accountId: String
+  -balance: double
+  -currentPage: int
+  -totalPages: int
+  -pageSize: int
+}
+
+' Repositories
+interface BankAccountRepository {
+}
+
+interface CustomerRepository {
+}
+
+interface AccountOperationRepository {
+  +findByBankAccountId(bankAccountId: String): List<AccountOperation>
+  +findByBankAccountId(bankAccountId: String, pageable: Pageable): Page<AccountOperation>
+}
+
+' Services
+interface BankAccountService {
+  +saveCustomer(customerDTO: CustomerDTO): CustomerDTO
+  +saveCurrentBankAccount(initialBalance: double, customerId: Long, overDraft: double): CurrentBankAccountDTO
+  +saveSavingBankAccount(initialBalance: double, customerId: Long, interestRate: double): SavingBankAccountDTO
+  +listCustomers(): List<CustomerDTO>
+  +getBankAccount(accountId: String): BankAccountDTO
+  +debit(accountId: String, amount: double, description: String): void
+  +credit(accountId: String, amount: double, description: String): void
+  +transfer(fromAccId: String, toAccId: String, amount: double): void
+  +bankAccountList(): List<BankAccountDTO>
+  +getCustomer(customerId: Long): CustomerDTO
+  +updateCustomer(customerDTO: CustomerDTO): CustomerDTO
+  +deleteCustomer(customerId: Long): void
+  +accountHistory(accountId: String): List<AccountOperationDTO>
+  +getAccountHistory(accountId: String, page: int, size: int): AccountHistoryDTO
+}
+
+' Controllers
+class BankAccountRestController {
+  +getBankAccount(accountId: String): BankAccountDTO
+  +getBankAccounts(): List<BankAccountDTO>
+  +getHistory(accountId: String): List<AccountOperationDTO>
+  +getAccountHistory(accountId: String, page: int, size: int): AccountHistoryDTO
+}
+
+class CustomerRestController {
+  +customers(): List<CustomerDTO>
+  +getCustomer(customerId: Long): CustomerDTO
+  +saveCustomer(customerDTO: CustomerDTO): CustomerDTO
+  +updateCustomer(customerDTO: CustomerDTO, id: Long): CustomerDTO
+  +deleteCustomer(id: Long): void
+}
+
+' Relationships
+Customer "1" *-- "*" BankAccount : has
+BankAccount "1" *-- "*" AccountOperation : has
+
+BankAccountRepository ..> BankAccount : manages
+CustomerRepository ..> Customer : manages
+AccountOperationRepository ..> AccountOperation : manages
+
+BankAccountService ..> BankAccountRepository : uses
+BankAccountService ..> CustomerRepository : uses
+BankAccountService ..> AccountOperationRepository : uses
+
+BankAccountRestController ..> BankAccountService : uses
+CustomerRestController ..> BankAccountService : uses
+
+CurrentBankAccountDTO "*" -- "1" CustomerDTO : references
+SavingBankAccountDTO "*" -- "1" CustomerDTO : references
+AccountHistoryDTO "1" *-- "*" AccountOperationDTO : contains
+
+@enduml
