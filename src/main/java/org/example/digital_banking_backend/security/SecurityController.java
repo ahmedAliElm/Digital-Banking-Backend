@@ -7,11 +7,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -58,21 +58,4 @@ public class SecurityController {
         return Map.of("access_token", jwt);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
